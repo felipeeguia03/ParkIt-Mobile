@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Job 1: lib + hooks + components — sin Docker, < 1 min ─────────────────
+  unit:
+    name: Unit & Component Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: bash scripts/run-all-tests.sh --skip-db --no-open
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-unit
+          path: test-report.html
+          retention-days: 14
+
+  # ── Job 2: integration — Supabase local con Docker ────────────────────────
+  integration:
+    name: Integration Tests (Supabase)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase local
+        run: supabase start
+
+      - name: Export Supabase credentials
+        run: |
+          supabase status -o env | grep -E 'API_URL|ANON_KEY|SERVICE_ROLE_KEY' > .supabase-env
+          # Mapear a las variables que espera setup.ts
+          API_URL=$(grep API_URL .supabase-env | cut -d= -f2)
+          ANON_KEY=$(grep ANON_KEY .supabase-env | grep -v SERVICE | cut -d= -f2)
+          SERVICE_KEY=$(grep SERVICE_ROLE_KEY .supabase-env | cut -d= -f2)
+          echo "SUPABASE_TEST_URL=$API_URL"         >> $GITHUB_ENV
+          echo "SUPABASE_TEST_ANON_KEY=$ANON_KEY"   >> $GITHUB_ENV
+          echo "SUPABASE_TEST_SERVICE_KEY=$SERVICE_KEY" >> $GITHUB_ENV
+
+      - name: Run integration tests
+        run: npx jest --selectProjects integration --no-coverage
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup

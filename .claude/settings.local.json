@@ -23,7 +23,12 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(''''main:'''', d.get\\(''''main''''\\)\\); print\\(''''module:'''', d.get\\(''''module''''\\)\\); print\\(''''exports keys:'''', list\\(d.get\\(''''exports'''',{}\\).keys\\(\\)\\)[:5]\\)\")",
       "Bash(python3 -m json.tool)",
       "Bash(chmod +x /Users/felipeeguia03/Desktop/parkit-mobile/scripts/run-all-tests.sh)",
-      "Bash(bash /Users/felipeeguia03/Desktop/parkit-mobile/scripts/run-all-tests.sh --skip-db)"
+      "Bash(bash /Users/felipeeguia03/Desktop/parkit-mobile/scripts/run-all-tests.sh --skip-db)",
+      "Bash(bash /Users/felipeeguia03/Desktop/parkit-mobile/scripts/run-all-tests.sh --skip-db --no-open 2>&1)",
+      "Bash(supabase status:*)",
+      "Bash(supabase start:*)",
+      "Bash(supabase db:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

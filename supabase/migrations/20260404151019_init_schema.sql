@@ -1,65 +1,55 @@
--- ============================================================
--- ParkIt UCC — Schema completo
--- Pegá esto en el SQL Editor de tu proyecto Supabase
--- ============================================================
+-- ── Tablas ────────────────────────────────────────────────────────────────
 
--- ── Tablas ────────────────────────────────────────────────────
-
--- Perfil de usuario (extiende auth.users de Supabase)
 create table public.profiles (
-  id     uuid references auth.users(id) on delete cascade primary key,
-  email  text not null,
-  name   text,
-  role   text not null default 'user',
+  id         uuid references auth.users(id) on delete cascade primary key,
+  email      text not null,
+  name       text,
+  role       text not null default 'user',
   created_at timestamptz not null default now(),
   constraint valid_role check (role in ('user', 'admin'))
 );
 
--- Zonas de estacionamiento
 create table public.parking_zones (
-  id          text primary key,          -- 'A', 'B', ..., 'G'
+  id          text primary key,
   name        text not null,
   total_spots int  not null,
-  polygon     jsonb not null,            -- array de {latitude, longitude}
+  polygon     jsonb not null,
   center      jsonb not null,
   created_at  timestamptz not null default now()
 );
 
--- Lugares individuales
 create table public.parking_spots (
-  id        text primary key,            -- 'A1', 'A2', ..., 'G50'
-  zone_id   text not null references public.parking_zones(id),
-  number    int  not null,
-  status    text not null default 'available',
+  id         text primary key,
+  zone_id    text not null references public.parking_zones(id),
+  number     int  not null,
+  status     text not null default 'available',
   updated_at timestamptz not null default now(),
   constraint valid_status check (status in ('available', 'occupied', 'reported'))
 );
 
--- Eventos de estacionamiento (fuente de verdad para métricas)
 create table public.parking_events (
   id               uuid primary key default gen_random_uuid(),
   user_id          uuid not null references auth.users(id),
   spot_id          text not null references public.parking_spots(id),
   zone_id          text not null references public.parking_zones(id),
-  action           text not null,        -- 'claim' | 'release'
-  duration_minutes int,                  -- se rellena al hacer 'release'
+  action           text not null,
+  duration_minutes int,
   created_at       timestamptz not null default now(),
   constraint valid_action check (action in ('claim', 'release'))
 );
 
--- Reportes de usuarios
 create table public.spot_reports (
   id         uuid primary key default gen_random_uuid(),
   user_id    uuid not null references auth.users(id),
   spot_id    text not null references public.parking_spots(id),
   zone_id    text not null references public.parking_zones(id),
-  type       text not null,             -- 'occupied_but_free' | 'free_but_occupied'
+  type       text not null,
   resolved   boolean not null default false,
   created_at timestamptz not null default now(),
   constraint valid_type check (type in ('occupied_but_free', 'free_but_occupied'))
 );
 
--- ── Trigger: crear perfil automáticamente al registrarse ─────
+-- ── Trigger: perfil automático al registrarse ─────────────────────────────
 
 create or replace function public.handle_new_user()
 returns trigger as $$
@@ -81,8 +71,9 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- ── Helper: chequeo de admin sin recursión ───────────────────
--- security definer bypasea RLS al consultar profiles desde las políticas.
+-- ── Helper: chequeo de admin sin recursión ────────────────────────────────
+-- security definer hace que la función corra con los permisos del owner
+-- (postgres), bypasseando RLS al consultar profiles desde las políticas.
 
 create or replace function public.is_admin()
 returns boolean
@@ -96,7 +87,7 @@ as $$
   );
 $$;
 
--- ── Row Level Security ────────────────────────────────────────
+-- ── Row Level Security ─────────────────────────────────────────────────────
 
 alter table public.profiles       enable row level security;
 alter table public.parking_zones  enable row level security;
@@ -104,14 +95,12 @@ alter table public.parking_spots  enable row level security;
 alter table public.parking_events enable row level security;
 alter table public.spot_reports   enable row level security;
 
--- Profiles
 create policy "users_read_own_profile" on public.profiles
   for select using (auth.uid() = id);
 
 create policy "admins_read_all_profiles" on public.profiles
   for select using (public.is_admin());
 
--- Zones & Spots: lectura para todos los usuarios autenticados
 create policy "auth_read_zones" on public.parking_zones
   for select using (auth.role() = 'authenticated');
 
@@ -121,7 +110,6 @@ create policy "auth_read_spots" on public.parking_spots
 create policy "auth_update_spots" on public.parking_spots
   for update using (auth.role() = 'authenticated');
 
--- Parking events
 create policy "users_insert_own_events" on public.parking_events
   for insert with check (auth.uid() = user_id);
 
@@ -131,7 +119,6 @@ create policy "users_read_own_events" on public.parking_events
 create policy "admins_read_all_events" on public.parking_events
   for select using (public.is_admin());
 
--- Spot reports
 create policy "users_insert_own_reports" on public.spot_reports
   for insert with check (auth.uid() = user_id);
 
@@ -141,12 +128,11 @@ create policy "users_read_own_reports" on public.spot_reports
 create policy "admins_read_all_reports" on public.spot_reports
   for select using (public.is_admin());
 
--- ── Realtime ──────────────────────────────────────────────────
--- Activa realtime para parking_spots (sincronización entre usuarios en vivo)
+-- ── Realtime ───────────────────────────────────────────────────────────────
 
 alter publication supabase_realtime add table public.parking_spots;
 
--- ── Seed: zonas y lugares ─────────────────────────────────────
+-- ── Seed: zonas y lugares ─────────────────────────────────────────────────
 
 insert into public.parking_zones (id, name, total_spots, center, polygon) values
 ('A', 'Estacionamiento Norte', 128,
@@ -171,22 +157,11 @@ insert into public.parking_zones (id, name, total_spots, center, polygon) values
   '{"latitude": -31.488176, "longitude": -64.240534}',
   '[{"latitude":-31.488038,"longitude":-64.241755},{"latitude":-31.488066,"longitude":-64.240364},{"latitude":-31.488315,"longitude":-64.240313},{"latitude":-31.488245,"longitude":-64.241737}]');
 
--- Genera los lugares para cada zona
--- Zona A: 128 spots
 insert into public.parking_spots (id, zone_id, number, status)
-select
-  'A' || n,
-  'A',
-  n,
-  'available'
+select 'A' || n, 'A', n, 'available'
 from generate_series(1, 128) as n;
 
--- Zonas B–G: 50 spots cada una
 insert into public.parking_spots (id, zone_id, number, status)
-select
-  z.id || n,
-  z.id,
-  n,
-  'available'
+select z.id || n, z.id, n, 'available'
 from (values ('B'), ('C'), ('D'), ('E'), ('F'), ('G')) as z(id)
 cross join generate_series(1, 50) as n;

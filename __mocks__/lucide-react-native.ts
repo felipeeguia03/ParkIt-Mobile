@@ -19,3 +19,7 @@ export const Check         = Icon;
 export const Info          = Icon;
 export const AlertCircle   = Icon;
 export const Loader        = Icon;
+export const Eye           = Icon;
+export const EyeOff        = Icon;
+export const Lock          = Icon;
+export const Mail          = Icon;
