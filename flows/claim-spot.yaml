@@ -1,0 +1,28 @@
+# E2E — Reclamar un lugar de estacionamiento
+# Requiere estar logueado. Correr después de login.yaml o usar runFlow.
+# Correr: maestro test flows/claim-spot.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+
+appId: com.ucc.parkit
+---
+- runFlow: login.yaml
+
+# En la pantalla principal, el carrusel muestra el primer spot disponible
+- assertVisible:
+    text: "Disponible"
+    timeout: 5000
+
+# Confirmar el lugar sugerido por el carrusel
+- tapOn: "Confirmar lugar"
+
+# Modal de confirmación
+- assertVisible: "¿Confirmar este lugar?"
+- tapOn: "Confirmar"
+
+# La card de "Mi lugar" debe aparecer
+- assertVisible:
+    text: "Mi lugar activo"
+    timeout: 5000
+
+# Liberar el lugar para no dejar estado sucio
+- tapOn: "Liberar lugar"
+- assertVisible: "Disponible"

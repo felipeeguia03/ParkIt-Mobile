@@ -1,0 +1,23 @@
+# E2E — Login con credenciales válidas UCC
+# Herramienta: Maestro (maestro.mobile.dev)
+# Correr: maestro test flows/login.yaml
+
+appId: com.ucc.parkit
+---
+- launchApp:
+    clearState: true
+
+- assertVisible: "Email"
+- tapOn: "Email"
+- inputText: "${TEST_EMAIL}"   # pasar con: maestro test -e TEST_EMAIL=... -e TEST_PASS=...
+
+- assertVisible: "Contraseña"
+- tapOn: "Contraseña"
+- inputText: "${TEST_PASS}"
+
+- tapOn: "Iniciar sesión"
+
+# Espera a que cargue la pantalla principal
+- assertVisible:
+    text: "Zona A"
+    timeout: 8000

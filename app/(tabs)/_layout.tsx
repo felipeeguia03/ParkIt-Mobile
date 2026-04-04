@@ -11,11 +11,16 @@ export default function TabsLayout() {
           tabBarActiveTintColor: "#4f46e5",
           tabBarInactiveTintColor: "#9ca3af",
           tabBarStyle: {
-            backgroundColor: "#ffffff",
+            position: "absolute",
+            backgroundColor: "rgba(255,255,255,0.97)",
             borderTopColor: "#f3f4f6",
             borderTopWidth: 1,
             paddingTop: 4,
             height: 60,
+            elevation: 20,
+            marginBottom: 12,
+            marginHorizontal: 16,
+            borderRadius: 20,
           },
           tabBarLabelStyle: {
             fontSize: 11,

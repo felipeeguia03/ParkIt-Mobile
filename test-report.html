@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ParkIt · Test Report</title>
+<style>
+  :root {
+    --green:       #22c55e;
+    --red:         #ef4444;
+    --yellow:      #f59e0b;
+    --blue:        #3b82f6;
+    --slate:       #64748b;
+    --bg:          #0f172a;
+    --card:        #1e293b;
+    --border:      #334155;
+    --text:        #f1f5f9;
+    --muted:       #94a3b8;
+    --lib:         #818cf8;
+    --hooks:       #34d399;
+    --components:  #fb923c;
+    --integration: #f97316;
+    --e2e:         #a78bfa;
+    --load:        #38bdf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--text);
+    padding: 2rem 1.5rem; min-height: 100vh;
+  }
+  h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+  .subtitle { color: var(--muted); font-size: 0.875rem; margin-top: 0.25rem; }
+
+  /* Info banner */
+  .info-banner {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    background: #3b82f615; border: 1px solid #3b82f640;
+    border-radius: 10px; padding: 0.75rem 1rem;
+    font-size: 0.82rem; color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+  .info-banner code {
+    font-family: monospace; background: #ffffff10;
+    padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.78rem;
+    color: var(--text);
+  }
+
+  /* Summary bar */
+  .summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem; margin: 2rem 0;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+  }
+  .stat-card .value { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .stat-card .label { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-card.pass  .value { color: var(--green); }
+  .stat-card.fail  .value { color: var(--red); }
+  .stat-card.total .value { color: var(--blue); }
+  .stat-card.time  .value { font-size: 1.4rem; color: var(--yellow); }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .progress-bar { height: 8px; border-radius: 4px; background: var(--border); overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 4px;
+    background: var(--green);
+    width: 100%; transition: width 0.6s ease;
+  }
+
+  /* Section dividers */
+  .section-label {
+    font-size: 0.7rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin: 2rem 0 0.75rem; padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Project badges */
+  .projects { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .proj-badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem;
+    font-weight: 600; border: 1px solid;
+    cursor: default; transition: opacity 0.15s;
+  }
+  .proj-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .proj-badge.lib         { color: var(--lib);         border-color: var(--lib);         background: #818cf820; }
+  .proj-badge.hooks       { color: var(--hooks);       border-color: var(--hooks);       background: #34d39920; }
+  .proj-badge.components  { color: var(--components);  border-color: var(--components);  background: #fb923c20; }
+  .proj-badge.integration { color: var(--integration); border-color: var(--integration); background: #f9731620; }
+  .proj-badge.e2e         { color: var(--e2e);         border-color: var(--e2e);         background: #a78bfa20; }
+  .proj-badge.load        { color: var(--load);        border-color: var(--load);        background: #38bdf820; }
+
+  /* Suite cards */
+  .suite {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 1rem; overflow: hidden;
+  }
+  .suite-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.9rem 1.25rem; cursor: pointer; user-select: none;
+  }
+  .suite-header:hover { background: #ffffff08; }
+  .suite-icon   { font-size: 1rem; flex-shrink: 0; }
+  .suite-name   { font-weight: 600; font-size: 0.95rem; flex: 1; }
+  .suite-path   { font-size: 0.7rem; color: var(--muted); }
+  .suite-counts { display: flex; gap: 0.5rem; font-size: 0.78rem; flex-shrink: 0; }
+  .count-pass   { color: var(--green); font-weight: 600; }
+  .count-fail   { color: var(--red);   font-weight: 600; }
+  .chevron { color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+  .suite.open .chevron { transform: rotate(180deg); }
+  .suite-proj {
+    font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem;
+    border-radius: 999px; flex-shrink: 0;
+  }
+  .suite-proj.lib         { color: var(--lib);         background: #818cf820; }
+  .suite-proj.hooks       { color: var(--hooks);       background: #34d39920; }
+  .suite-proj.components  { color: var(--components);  background: #fb923c20; }
+  .suite-proj.integration { color: var(--integration); background: #f9731620; }
+  .suite-proj.e2e         { color: var(--e2e);         background: #a78bfa20; }
+  .suite-proj.load        { color: var(--load);        background: #38bdf820; }
+
+  /* Test list */
+  .suite-body { display: none; border-top: 1px solid var(--border); }
+  .suite.open .suite-body { display: block; }
+  .describe-group { padding: 0.5rem 0; }
+  .describe-title {
+    font-size: 0.72rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.5rem 1.25rem 0.25rem;
+  }
+  .test-row {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.5rem 1.25rem; font-size: 0.84rem;
+    border-bottom: 1px solid #ffffff06;
+  }
+  .test-row:last-child { border-bottom: none; }
+  .test-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 0.35rem;
+  }
+  .test-dot.passed  { background: var(--green);  box-shadow: 0 0 6px #22c55e60; }
+  .test-dot.failed  { background: var(--red);    box-shadow: 0 0 6px #ef444460; }
+  .test-dot.pending { background: var(--yellow); }
+  .test-dot.manual  { background: var(--slate);  }
+  .test-title    { flex: 1; line-height: 1.4; }
+  .test-duration { font-size: 0.72rem; color: var(--muted); flex-shrink: 0; margin-top: 0.15rem; }
+  .test-meta     { font-size: 0.72rem; color: var(--muted); flex-shrink: 0; margin-top: 0.15rem; font-style: italic; }
+  .test-error {
+    margin-top: 0.4rem; padding: 0.6rem 0.8rem;
+    background: #ef444415; border-left: 3px solid var(--red);
+    border-radius: 4px; font-family: monospace; font-size: 0.75rem;
+    color: #fca5a5; white-space: pre-wrap; word-break: break-word;
+  }
+
+  /* Manual badge inside test row */
+  .badge-manual {
+    font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.4rem;
+    border-radius: 4px; background: #64748b30; color: var(--muted);
+    flex-shrink: 0; margin-top: 0.15rem; align-self: flex-start;
+  }
+
+  /* Footer */
+  footer { margin-top: 3rem; text-align: center; color: var(--muted); font-size: 0.75rem; }
+</style>
+</head>
+<body>
+
+<h1>ParkIt · Test Report</h1>
+<p class="subtitle">Generado el 4/4/2026, 11:30:20</p>
+
+<div class="summary">
+  <div class="stat-card total">
+    <div class="value">100</div>
+    <div class="label">Tests Jest</div>
+  </div>
+  <div class="stat-card pass">
+    <div class="value">100</div>
+    <div class="label">Pasaron</div>
+  </div>
+  <div class="stat-card fail">
+    <div class="value">0</div>
+    <div class="label">Fallaron</div>
+  </div>
+  <div class="stat-card time">
+    <div class="value">1.61 s</div>
+    <div class="label">Duración</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Todos los tests pasaron ✓</span>
+    <span>100%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+</div>
+
+<div class="info-banner">
+        <span>ℹ️</span>
+        <span>Tests de integración no corrieron en este reporte.
+          Ejecutá <code>node scripts/generate-test-report.js --integration</code>
+          (requiere <code>supabase start</code>).</span>
+      </div>
+
+<div class="projects">
+  <div class="proj-badge lib"><span class="dot"></span> lib — lógica pura</div>
+  <div class="proj-badge hooks"><span class="dot"></span> hooks — React Native</div>
+  <div class="proj-badge components"><span class="dot"></span> components — UI</div>
+  <div class="proj-badge integration"><span class="dot"></span> integration — Supabase local</div>
+  <div class="proj-badge e2e"><span class="dot"></span> E2E — Maestro</div>
+  <div class="proj-badge load"><span class="dot"></span> Load — k6</div>
+</div>
+
+<div class="section-label">Unit &amp; Integration — Jest</div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj lib">lib</span>
+        <span class="suite-name">deduplication.test<br/><span class="suite-path">__tests__/lib/deduplication.test.ts</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">7 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">deduplicación optimistic + Realtime (Fase 2b)</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime con mismo status que optimistic → update ignorado</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime con mismo status → limpia el pendingOptimistic</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime con status distinto → update aplicado (servidor corrigió)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime sin optimistic pendiente → update aplicado normalmente</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">dos spots en vuelo simultáneo → cada uno deduplica independientemente</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime de spot distinto no limpia el pending de otro spot</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">segundo Realtime del mismo spot (sin optimistic) → aplicado</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj lib">lib</span>
+        <span class="suite-name">memo-comparators.test<br/><span class="suite-path">__tests__/lib/memo-comparators.test.ts</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">22 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">zoneLayerComparator</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">mismas props → true (no re-renderizar)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">nuevo array de zones con mismos statuses → true</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">spot pasa de 'occupied' a 'reported' → true (available no cambia)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">spot pasa de 'available' a 'occupied' → false (conteo disponibles cambia)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">focusedZoneId cambia de null a 'A' → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">focusedZoneId cambia de 'A' a 'B' → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">cantidad de zonas cambia → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">spotsLayerComparator</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">mismas props → true</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">nueva referencia de zone con mismos statuses → true</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">un spot cambia status → false (para pasar props nuevos a SpotPolygon hijos)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">renderCount sube (RAF batch) → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">renderCount baja a 0 (reset por cambio de zona) → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">showNumbers cambia → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">zone.id cambia (cambio de zona) → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">spots.length cambia → false</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">spotPolygonComparator</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">mismas props → true (no re-renderizar)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">mismo status, nueva referencia de spot → true</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">status cambia de 'occupied' a 'available' → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">status cambia de 'available' a 'reported' → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">showNumbers cambia → false</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">onPress cambia de referencia → true (no afecta: deps vacíos garantizan estabilidad)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">zone o idx cambian → true (geometría estática calculada con useMemo([]))</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj lib">lib</span>
+        <span class="suite-name">parking-utils.test<br/><span class="suite-path">__tests__/lib/parking-utils.test.ts</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">13 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">updateOneSpot</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">cambia el status del spot correcto</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no modifica otros spots de la misma zona</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no modifica zonas que no contienen el spot</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">spotId inexistente devuelve array con mismos statuses</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve un array nuevo (inmutabilidad)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">la zona que contiene el spot tiene nueva referencia</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">la zona que NO contiene el spot conserva la misma referencia</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">puede cambiar a status 'reported'</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">applyStatusMap</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">aplica el Map a los spots correspondientes</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Map vacío devuelve los mismos statuses</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">spotId que no existe en zones es ignorado silenciosamente</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">actualiza múltiples spots en múltiples zonas en un solo pase</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve array nuevo (inmutabilidad)</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj hooks">hooks</span>
+        <span class="suite-name">useParkingState-flow.test<br/><span class="suite-path">__tests__/hooks/useParkingState-flow.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">13 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — availableSpots</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve todos los spots disponibles de todas las zonas</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no incluye spots occupied ni reported</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">filtra por zoneFilter cuando se establece</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">sin filtro, devuelve spots de todas las zonas</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — carrusel de spots</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">currentAvailableSpot empieza en índice 0</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleNextSpot avanza el carrusel</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleNextSpot hace wrap-around al principio</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handlePrevSpot retrocede el carrusel con wrap-around</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleZoneFilterChange resetea el índice a 0</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">currentAvailableSpot es null si no hay spots disponibles</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — handleQuickSelect</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">abre modal de confirmación con el spot actual del carrusel</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no hace nada si no hay spots disponibles</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">bloquea si el usuario ya tiene parking activo (doble ocupación)</span>
+          <span class="test-duration">5ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj hooks">hooks</span>
+        <span class="suite-name">useParkingState-realtime.test<br/><span class="suite-path">__tests__/hooks/useParkingState-realtime.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">5 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — Realtime (Fase 2b)</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime actualiza el status de un spot en zones</span>
+          <span class="test-duration">12ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime no modifica zonas que no contienen el spot</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">deduplication: eco del propio optimistic → no vuelve a aplicar</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">deduplication: Realtime con status diferente → sí aplica corrección del servidor</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">Realtime desconocido (no en pendingOptimistic) → aplica directamente</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj hooks">hooks</span>
+        <span class="suite-name">useParkingState-stability.test<br/><span class="suite-path">__tests__/hooks/useParkingState-stability.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">15 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — estabilidad de handlers (Fase 2a)</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleSpotSelect mantiene referencia tras setZones</span>
+          <span class="test-duration">6ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleReportSpot mantiene referencia tras setZones</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleConfirmParking mantiene referencia tras setZones</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleLeaveParking mantiene referencia tras setZones</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleReportConfirm mantiene referencia tras setZones</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handlers estables a través de 10 setZones consecutivos</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — lógica de selección</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleSpotSelect con spot 'available' → abre confirmModal</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleSpotSelect con spot 'occupied' → no abre modal</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleReportSpot con spot 'occupied' → abre reportModal</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleReportSpot con spot 'available' → no abre modal</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useParkingState — flujo claim/release</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleConfirmParking → userParking se setea con zona y spot correctos</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleConfirmParking → spot pasa a 'occupied' en zones</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleConfirmParking → cierra el modal</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleLeaveParking → userParking vuelve a null</span>
+          <span class="test-duration">0ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">handleLeaveParking → spot vuelve a 'available'</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj components">components</span>
+        <span class="suite-name">CampusMap.test<br/><span class="suite-path">__tests__/components/CampusMap.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">6 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">CampusMap — render base</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">renderiza sin crashear con zonas</span>
+          <span class="test-duration">17ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el botón de recentrar</span>
+          <span class="test-duration">3ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra la leyenda global (Alta/Media/Lleno) cuando no hay zona enfocada</span>
+          <span class="test-duration">3ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">CampusMap — foco de zona via props</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el HUD con el nombre de la zona al recibir focusZoneId + focusTimestamp</span>
+          <span class="test-duration">38ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el conteo de disponibles/totales en el HUD</span>
+          <span class="test-duration">10ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">la leyenda global se oculta cuando hay zona enfocada</span>
+          <span class="test-duration">5ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj components">components</span>
+        <span class="suite-name">ConfirmParkingModal.test<br/><span class="suite-path">__tests__/components/ConfirmParkingModal.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">8 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">ConfirmParkingModal — guard de nulos</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no renderiza nada si zone es null</span>
+          <span class="test-duration">6ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no renderiza nada si spot es null</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">ConfirmParkingModal — contenido</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el ID del spot en el hero</span>
+          <span class="test-duration">168ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el nombre de la zona</span>
+          <span class="test-duration">3ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra zona e ID de lugar en la info card</span>
+          <span class="test-duration">2ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">ConfirmParkingModal — interacciones</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">llama a onConfirm al presionar 'Estacionar aquí'</span>
+          <span class="test-duration">3ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">llama a onOpenChange(false) al presionar 'Cancelar'</span>
+          <span class="test-duration">3ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">onConfirm y onOpenChange son independientes</span>
+          <span class="test-duration">2ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj components">components</span>
+        <span class="suite-name">MyParkingCard.test<br/><span class="suite-path">__tests__/components/MyParkingCard.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">5 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">MyParkingCard — contenido</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el ID del spot</span>
+          <span class="test-duration">27ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el nombre de la zona</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra la hora de inicio con el prefijo 'Desde las'</span>
+          <span class="test-duration">7ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">MyParkingCard — interacciones</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">llama a onLeave al presionar 'Liberar lugar'</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">navega al mapa con focusZoneId correcto al presionar 'Ver en mapa'</span>
+          <span class="test-duration">3ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj components">components</span>
+        <span class="suite-name">ReportSpotModal.test<br/><span class="suite-path">__tests__/components/ReportSpotModal.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">6 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">ReportSpotModal — guard de nulos</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no renderiza nada si zone es null</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no renderiza nada si spot es null</span>
+          <span class="test-duration">0ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">ReportSpotModal — contenido</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el ID del spot</span>
+          <span class="test-duration">26ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">muestra el nombre de la zona</span>
+          <span class="test-duration">2ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">ReportSpotModal — interacciones</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">llama a onConfirm al presionar 'Reportar como ocupado'</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">llama a onOpenChange(false) al presionar 'Cancelar'</span>
+          <span class="test-duration">2ms</span>
+        </div>
+      </div></div>
+    </div>
+
+<div class="section-label">End-to-End — Maestro <span style="font-weight:400;color:var(--muted)">(ejecución manual)</span></div>
+
+    <div class="suite open">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--slate)">○</span>
+        <span class="suite-proj e2e">e2e</span>
+        <span class="suite-name">E2E · Maestro<br/><span class="suite-path">flows/</span></span>
+        <span class="suite-counts">
+          <span style="color:var(--slate);font-size:0.78rem">3 scripts</span>
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body" style="display:block">
+        <div class="describe-group">
+          
+    <div class="test-row">
+      <span class="test-dot manual"></span>
+      <span class="test-title">
+        login.yaml
+        <br/><span style="font-size:0.72rem;color:var(--muted)">Login con credenciales @ucc.edu.ar · verifica pantalla principal con zonas</span>
+      </span>
+      <span class="badge-manual">manual</span>
+    </div>
+    <div class="test-row">
+      <span class="test-dot manual"></span>
+      <span class="test-title">
+        claim-spot.yaml
+        <br/><span style="font-size:0.72rem;color:var(--muted)">Seleccionar lugar del carrusel → confirmar → verificar card activa → liberar</span>
+      </span>
+      <span class="badge-manual">manual</span>
+    </div>
+    <div class="test-row">
+      <span class="test-dot manual"></span>
+      <span class="test-title">
+        report-spot.yaml
+        <br/><span style="font-size:0.72rem;color:var(--muted)">Ir a pestaña Reportar → seleccionar spot → elegir tipo → confirmar envío</span>
+      </span>
+      <span class="badge-manual">manual</span>
+    </div>
+        </div>
+      </div>
+    </div>
+
+<div class="section-label">Load Tests — k6 <span style="font-weight:400;color:var(--muted)">(ejecución manual)</span></div>
+
+    <div class="suite open">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--slate)">○</span>
+        <span class="suite-proj load">load</span>
+        <span class="suite-name">Load · k6<br/><span class="suite-path">load-tests/</span></span>
+        <span class="suite-counts">
+          <span style="color:var(--slate);font-size:0.78rem">2 scripts</span>
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body" style="display:block">
+        <div class="describe-group">
+          
+    <div class="test-row">
+      <span class="test-dot manual"></span>
+      <span class="test-title">
+        concurrent-reads.js
+        <br/><span style="font-size:0.72rem;color:var(--muted)">50 VUs leyendo parking_spots · rampa 30s → sostenido 1m · threshold: p95 &lt; 800ms, errors &lt; 1%</span>
+      </span>
+      <span class="badge-manual">manual</span>
+    </div>
+    <div class="test-row">
+      <span class="test-dot manual"></span>
+      <span class="test-title">
+        claim-release.js
+        <br/><span style="font-size:0.72rem;color:var(--muted)">20 VUs claim + release concurrente en zona B · threshold: errors &lt; 2% por tipo, p95 &lt; 1200ms</span>
+      </span>
+      <span class="badge-manual">manual</span>
+    </div>
+        </div>
+      </div>
+    </div>
+
+<footer>ParkIt UCC · Jest 10 suites · 100 tests · 3 flujos E2E · 2 scripts de carga</footer>
+
+<script>
+  document.querySelectorAll('.suite-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.parentElement.classList.toggle('open');
+    });
+  });
+  document.querySelectorAll('.suite').forEach(suite => {
+    if (suite.querySelector('.test-dot.failed')) {
+      suite.classList.add('open');
+    }
+  });
+</script>
+</body>
+</html>

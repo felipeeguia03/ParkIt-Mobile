@@ -1,0 +1,31 @@
+# E2E — Reportar un spot ocupado
+# Correr: maestro test flows/report-spot.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+
+appId: com.ucc.parkit
+---
+- runFlow: login.yaml
+
+# Ir a la pestaña de reportes
+- tapOn:
+    text: "Reportar"
+
+- assertVisible:
+    text: "Reportar un lugar"
+    timeout: 4000
+
+# Seleccionar zona A del selector
+- tapOn: "Zona A"
+
+# Seleccionar el primer spot de la lista (cualquier occupied o reported)
+- tapOn:
+    id: "spot-list-item-0"
+
+# Elegir tipo de reporte
+- tapOn: "Libre pero marcado como ocupado"
+
+# Confirmar
+- tapOn: "Enviar reporte"
+
+- assertVisible:
+    text: "Reporte enviado"
+    timeout: 4000

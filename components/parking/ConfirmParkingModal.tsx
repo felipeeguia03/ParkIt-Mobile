@@ -1,5 +1,6 @@
-import { Modal, View, Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
-import { Car, MapPin } from "lucide-react-native";
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Car, MapPin, CheckCircle } from "lucide-react-native";
 import { ParkingSpot, ParkingZone } from "@/lib/parking-data";
 
 interface ConfirmParkingModalProps {
@@ -17,54 +18,174 @@ export function ConfirmParkingModal({
   spot,
   onConfirm,
 }: ConfirmParkingModalProps) {
+  const insets = useSafeAreaInsets();
+
   if (!zone || !spot) return null;
 
   return (
     <Modal
       visible={open}
-      transparent
-      animationType="fade"
+      transparent={false}
+      animationType="slide"
       onRequestClose={() => onOpenChange(false)}
     >
-      <TouchableWithoutFeedback onPress={() => onOpenChange(false)}>
-        <View className="flex-1 bg-black/50 items-center justify-center px-6">
-          <TouchableWithoutFeedback>
-            <View className="bg-white rounded-3xl p-6 w-full max-w-sm">
-              <Text className="text-xl font-semibold text-center text-gray-900 mb-1">
-                Confirmar Estacionamiento
-              </Text>
-              <Text className="text-sm text-gray-500 text-center mb-6">
-                ¿Estás seguro de que quieres estacionar aquí?
-              </Text>
+      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom + 16 }]}>
 
-              <View className="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-6 items-center mb-6">
-                <View className="w-16 h-16 bg-emerald-100 rounded-full items-center justify-center mb-4">
-                  <Car size={32} color="#059669" />
-                </View>
-                <Text className="text-3xl font-bold text-emerald-700 mb-1">{spot.id}</Text>
-                <View className="flex-row items-center gap-1">
-                  <MapPin size={14} color="#6b7280" />
-                  <Text className="text-sm text-gray-500">{zone.name}</Text>
-                </View>
-              </View>
-
-              <TouchableOpacity
-                onPress={onConfirm}
-                className="bg-emerald-600 rounded-2xl py-4 items-center mb-3"
-              >
-                <Text className="text-white font-semibold text-base">Estacionar aquí</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => onOpenChange(false)}
-                className="py-3 items-center"
-              >
-                <Text className="text-gray-500 font-medium">Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerLabel}>Estás estacionado en</Text>
+          <Text style={styles.headerSub}>{zone.name}</Text>
         </View>
-      </TouchableWithoutFeedback>
+
+        {/* Spot number hero */}
+        <View style={styles.heroWrap}>
+          <View style={styles.heroCircle}>
+            <Car size={52} color="#059669" />
+          </View>
+          <Text style={styles.spotId}>{spot.id}</Text>
+          <View style={styles.zoneBadge}>
+            <MapPin size={16} color="#6b7280" />
+            <Text style={styles.zoneBadgeText}>{zone.name}</Text>
+          </View>
+        </View>
+
+        {/* Info card */}
+        <View style={styles.infoCard}>
+          <View style={styles.infoRow}>
+            <CheckCircle size={20} color="#059669" />
+            <Text style={styles.infoText}>Lugar verificado como disponible</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MapPin size={20} color="#4f46e5" />
+            <Text style={styles.infoText}>Zona {zone.id} · Lugar #{spot.number}</Text>
+          </View>
+        </View>
+
+        {/* Spacer */}
+        <View style={{ flex: 1 }} />
+
+        {/* Actions */}
+        <View style={styles.actions}>
+          <TouchableOpacity style={styles.confirmBtn} onPress={onConfirm} activeOpacity={0.85}>
+            <Text style={styles.confirmBtnText}>Estacionar aquí</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.cancelBtn} onPress={() => onOpenChange(false)} activeOpacity={0.7}>
+            <Text style={styles.cancelBtnText}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f0fdf4",
+    paddingHorizontal: 28,
+  },
+  header: {
+    alignItems: "center",
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  headerLabel: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#064e3b",
+    textAlign: "center",
+  },
+  headerSub: {
+    fontSize: 15,
+    color: "#059669",
+    marginTop: 4,
+    fontWeight: "500",
+  },
+  heroWrap: {
+    alignItems: "center",
+    marginTop: 32,
+    marginBottom: 32,
+  },
+  heroCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#d1fae5",
+    borderWidth: 3,
+    borderColor: "#6ee7b7",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 28,
+  },
+  spotId: {
+    fontSize: 80,
+    fontWeight: "900",
+    color: "#065f46",
+    lineHeight: 88,
+    letterSpacing: -2,
+  },
+  zoneBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 8,
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#d1fae5",
+  },
+  zoneBadgeText: {
+    fontSize: 14,
+    color: "#374151",
+    fontWeight: "500",
+  },
+  infoCard: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    gap: 14,
+    borderWidth: 1,
+    borderColor: "#d1fae5",
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  infoText: {
+    fontSize: 15,
+    color: "#374151",
+    fontWeight: "500",
+  },
+  actions: {
+    gap: 12,
+  },
+  confirmBtn: {
+    backgroundColor: "#059669",
+    borderRadius: 20,
+    paddingVertical: 18,
+    alignItems: "center",
+    shadowColor: "#059669",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  confirmBtnText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 18,
+  },
+  cancelBtn: {
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  cancelBtnText: {
+    color: "#6b7280",
+    fontSize: 15,
+    fontWeight: "500",
+  },
+});

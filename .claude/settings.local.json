@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ide__getDiagnostics",
+      "Bash(mv \"Zona A zoom.png\" zonaA-zoom.png)",
+      "Bash(mv \"zonaA 3d 2.png\" zonaA-3d-2.png)",
+      "Bash(mv \"zona A 3d.png\" zonaA-3d.png)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls /Users/felipeeguia03/Desktop/parkit-mobile/ios/*.xcworkspace)",
+      "Read(//Users/felipeeguia03/Desktop/**)",
+      "Bash(npx create-next-app@latest parkit-admin --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(npx jest:*)",
+      "Bash(node -e \"console.log\\(require\\(''./node_modules/jest-expo/package.json''\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require\\(''./node_modules/expo/package.json''\\).version\\)\")",
+      "Bash(grep -rn \"installGlobal\\\\|ExpoImportMeta\" node_modules/expo/src --include=*.ts --include=*.js)",
+      "Bash(grep -rn \"winter/runtime\\\\|winter/installGlobal\" node_modules/expo/src --include=*.ts --include=*.js)",
+      "Bash(grep -rn winter/runtime node_modules/expo --include=*.js --include=*.ts)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d, indent=2\\)\\)\")",
+      "Bash(node:*)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); r=d[''''testResults''''][0]; print\\(list\\(r.keys\\(\\)\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(''''main:'''', d.get\\(''''main''''\\)\\); print\\(''''module:'''', d.get\\(''''module''''\\)\\); print\\(''''exports keys:'''', list\\(d.get\\(''''exports'''',{}\\).keys\\(\\)\\)[:5]\\)\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(chmod +x /Users/felipeeguia03/Desktop/parkit-mobile/scripts/run-all-tests.sh)",
+      "Bash(bash /Users/felipeeguia03/Desktop/parkit-mobile/scripts/run-all-tests.sh --skip-db)"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "parkit-mobile",
+    "name": "ParkIt UCC",
     "slug": "parkit-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,15 +13,30 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ucc.parkit",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Para mostrarte tu posición en el mapa del campus y ayudarte a encontrar el estacionamiento más cercano.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Para mostrarte tu posición en el mapa del campus."
+      }
     },
     "android": {
+      "package": "com.ucc.parkit",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "config": {
+        "googleMaps": {
+          "apiKey": "TU_API_KEY_AQUI"
+        }
+      },
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ]
     },
     "scheme": "parkit",
     "web": {
@@ -29,7 +44,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "react-native-maps"
     ]
   }
 }
