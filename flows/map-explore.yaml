@@ -1,0 +1,75 @@
+# ── E2E: Explorar el mapa, tocar zona, ver spots, no trabarse ────────────────
+# Uso: maestro test flows/map-explore.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+#
+# Qué verifica:
+#   1. El mapa carga y muestra la leyenda global (Alta / Media / Lleno)
+#   2. Tocar el label de una zona enfoca el mapa y muestra el HUD
+#   3. El HUD muestra nombre de zona + conteo de disponibles
+#   4. La leyenda cambia a "Libre / Ocupado" (vista de zona)
+#   5. El botón de recentrar vuelve a la vista global
+#   6. En ningún momento la app se congela (los asserts tienen timeouts razonables)
+
+appId: com.ucc.parkit
+---
+- runFlow: login.yaml
+
+# ── 1. Navegar al mapa ────────────────────────────────────────────────────────
+- tapOn: "Mapa"
+
+# Manejar permiso de ubicación (solo la primera vez)
+- runFlow: _location-permission.yaml
+
+# ── 2. Mapa cargado — leyenda global visible ──────────────────────────────────
+# La leyenda global desaparece cuando se enfoca una zona, así que confirmamos
+# que está presente ANTES de tocar ninguna zona.
+- assertVisible:
+    text: "Alta"
+    timeout: 8000
+
+# ── 3. Tocar zona A (label sobre el mapa) ────────────────────────────────────
+# Los labels de zona son Markers de react-native-maps con texto "A", "B", etc.
+# Maestro los encuentra por el texto visible.
+- tapOn:
+    text: "A"
+    timeout: 5000
+
+# ── 4. HUD de zona enfocada ───────────────────────────────────────────────────
+# Muestra: nombre de zona + "X disponibles · Y totales"
+- assertVisible:
+    text: "Estacionamiento Norte"
+    timeout: 6000
+
+- assertVisible:
+    text: "disponibles"
+    timeout: 4000
+
+# La leyenda ahora es de zona: "Libre" y "Ocupado"
+- assertVisible: "Libre"
+- assertVisible: "Ocupado"
+
+# ── 5. Tocar otra zona sin freezear ──────────────────────────────────────────
+- tapOn:
+    text: "B"
+    timeout: 5000
+
+- assertVisible:
+    text: "Zona B"
+    timeout: 6000
+
+# ── 6. Recentrar con el botón de navegación ──────────────────────────────────
+# El botón Navigation no tiene texto, pero sí está después de la leyenda.
+# Usamos las coordenadas aproximadas del botón (esquina inferior derecha).
+# Alternativa: agregar testID="recenter-btn" al componente.
+- tapOn:
+    text: "Alta"           # la leyenda global reaparece después de recentrar
+    optional: true         # puede que ya esté visible si el tap anterior no funcionó
+
+# Si el botón no es tapeable por texto, probamos por id de accesibilidad
+- tapOn:
+    id: "recenter-btn"
+    optional: true
+
+# Leyenda global visible → mapa recentrado
+- assertVisible:
+    text: "Alta"
+    timeout: 5000

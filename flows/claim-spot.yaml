@@ -1,28 +1,72 @@
-# E2E — Reclamar un lugar de estacionamiento
-# Requiere estar logueado. Correr después de login.yaml o usar runFlow.
-# Correr: maestro test flows/claim-spot.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+# ── E2E: Pedir lugar → confirmar → ver en mapa → liberar ─────────────────────
+# Uso: maestro test flows/claim-spot.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+#
+# Qué verifica:
+#   1. El carrusel muestra un lugar disponible cuando hay datos de Supabase
+#   2. Tocar el carrusel abre el modal de confirmación con los datos correctos
+#   3. Confirmar actualiza el estado y muestra MyParkingCard
+#   4. "Ver en mapa" navega al mapa y muestra el HUD de la zona
+#   5. "Liberar lugar" vuelve al estado inicial
 
 appId: com.ucc.parkit
 ---
 - runFlow: login.yaml
 
-# En la pantalla principal, el carrusel muestra el primer spot disponible
+# ── 1. Home cargada con datos de Supabase ─────────────────────────────────────
 - assertVisible:
-    text: "Disponible"
-    timeout: 5000
+    text: "Lugar disponible"
+    timeout: 8000
 
-# Confirmar el lugar sugerido por el carrusel
-- tapOn: "Confirmar lugar"
-
-# Modal de confirmación
-- assertVisible: "¿Confirmar este lugar?"
-- tapOn: "Confirmar"
-
-# La card de "Mi lugar" debe aparecer
+# Esperar que el carrusel tenga un spot (Supabase puede tardar ~2s)
 - assertVisible:
-    text: "Mi lugar activo"
-    timeout: 5000
+    text: "Tocar para ocupar"
+    timeout: 12000
 
-# Liberar el lugar para no dejar estado sucio
+# ── 2. Abrir modal de confirmación ────────────────────────────────────────────
+- tapOn: "Tocar para ocupar"
+
+- assertVisible:
+    text: "Estás estacionado en"
+    timeout: 4000
+
+- assertVisible: "Estacionar aquí"
+
+# ── 3. Confirmar → MyParkingCard ──────────────────────────────────────────────
+- tapOn: "Estacionar aquí"
+
+- assertVisible:
+    text: "Estás estacionado en"
+    timeout: 4000
+
+- assertVisible: "Ver en mapa"
+- assertVisible: "Liberar lugar"
+
+# ── 4. Ver en mapa ────────────────────────────────────────────────────────────
+- tapOn: "Ver en mapa"
+
+# Manejar permiso de ubicación si es la primera vez
+- runFlow: _location-permission.yaml
+
+# El mapa debe mostrar el HUD con la zona del lugar reclamado
+# (InteractionManager espera que terminen las animaciones de navegación)
+- assertVisible:
+    text: "disponibles"
+    timeout: 10000
+
+# La leyenda de zona enfocada reemplaza a la global
+- assertVisible: "Libre"
+- assertVisible: "Ocupado"
+
+# ── 5. Volver a home y liberar ────────────────────────────────────────────────
+- tapOn: "Inicio"
+
+- assertVisible:
+    text: "Estás estacionado en"
+    timeout: 4000
+
 - tapOn: "Liberar lugar"
-- assertVisible: "Disponible"
+
+# Después de liberar, la card desaparece y el carrusel vuelve
+- assertVisible:
+    text: "Tocar para ocupar"
+    timeout: 6000

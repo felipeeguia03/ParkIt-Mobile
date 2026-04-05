@@ -1,0 +1,27 @@
+# ── Helper: manejar permiso de ubicación ──────────────────────────────────────
+# Se llama desde los flows de mapa con `runFlow: _location-permission.yaml`.
+# Si el permiso ya fue otorgado no hace nada (todos los tapOn son optional).
+#
+# Flujo en map.tsx:
+#   status=undetermined → pantalla "¿Dónde estás en el campus?"
+#     → "Permitir ubicación" → dialog del sistema iOS/Android
+#   status=denied → pantalla "Ubicación desactivada" (mapa NO aparece)
+#
+# Para que el mapa se muestre hay que otorgar el permiso.
+
+appId: com.ucc.parkit
+---
+# Si aparece la pantalla de permiso de la app → tocar "Permitir ubicación"
+- tapOn:
+    text: "Permitir ubicación"
+    optional: true
+
+# Dialog del sistema iOS — elegir "Mientras uso la app"
+- tapOn:
+    text: "Allow While Using App"
+    optional: true
+
+# Dialog del sistema Android
+- tapOn:
+    text: "Allow only while using the app"
+    optional: true

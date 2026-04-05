@@ -461,6 +461,7 @@ export function CampusMap({ zones, onSpotSelect, onReportSpot, focusZoneId, focu
 
       {/* Botón recentrar */}
       <TouchableOpacity
+        testID="recenter-btn"
         style={[styles.recenterBtn, { bottom: insets.bottom + 72 }]}
         onPress={handleRecenter}
         activeOpacity={0.85}

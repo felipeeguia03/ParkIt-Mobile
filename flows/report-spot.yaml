@@ -1,31 +1,65 @@
-# E2E — Reportar un spot ocupado
-# Correr: maestro test flows/report-spot.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+# ── E2E: Reportar un lugar (flujo de 3 pasos) ────────────────────────────────
+# Uso: maestro test flows/report-spot.yaml -e TEST_EMAIL=... -e TEST_PASS=...
+#
+# Usa el tipo "Lugar libre que está ocupado" (reporta spot disponible como ocupado)
+# porque al inicio todos los spots están disponibles en el seed.
+#
+# Qué verifica:
+#   1. Navegación al tab Reportar
+#   2. Paso 1: elegir tipo de reporte
+#   3. Paso 2: elegir zona (Estacionamiento Norte — tiene 128 spots disponibles)
+#   4. Paso 3: elegir lugar específico (A1)
+#   5. Confirmar en el Alert del sistema
+#   6. Pantalla de éxito "¡Reporte enviado!"
 
 appId: com.ucc.parkit
 ---
 - runFlow: login.yaml
 
-# Ir a la pestaña de reportes
-- tapOn:
-    text: "Reportar"
+# ── 1. Ir a Reportar ─────────────────────────────────────────────────────────
+- tapOn: "Reportar"
 
 - assertVisible:
-    text: "Reportar un lugar"
-    timeout: 4000
+    text: "¿Qué querés reportar?"
+    timeout: 5000
 
-# Seleccionar zona A del selector
-- tapOn: "Zona A"
-
-# Seleccionar el primer spot de la lista (cualquier occupied o reported)
-- tapOn:
-    id: "spot-list-item-0"
-
-# Elegir tipo de reporte
-- tapOn: "Libre pero marcado como ocupado"
-
-# Confirmar
-- tapOn: "Enviar reporte"
+# ── 2. Elegir tipo ────────────────────────────────────────────────────────────
+- tapOn: "Lugar libre que está ocupado"
 
 - assertVisible:
-    text: "Reporte enviado"
-    timeout: 4000
+    text: "¿En qué zona?"
+    timeout: 3000
+
+# ── 3. Elegir zona ────────────────────────────────────────────────────────────
+# Zona A (Estacionamiento Norte) tiene 128 spots disponibles → siempre habilitada
+- tapOn: "Estacionamiento Norte"
+
+- assertVisible:
+    text: "¿Qué lugar?"
+    timeout: 3000
+
+# ── 4. Elegir lugar específico ────────────────────────────────────────────────
+- tapOn: "A1"
+
+# Botón de confirmación aparece con el texto dinámico
+- assertVisible:
+    text: "Reportar A1 como ocupado"
+    timeout: 3000
+
+- tapOn: "Reportar A1 como ocupado"
+
+# ── 5. Alert del sistema: confirmar ──────────────────────────────────────────
+- assertVisible:
+    text: "Confirmar reporte"
+    timeout: 3000
+
+- tapOn: "Reportar"
+
+# ── 6. Pantalla de éxito ──────────────────────────────────────────────────────
+- assertVisible:
+    text: "¡Reporte enviado!"
+    timeout: 5000
+
+- assertVisible:
+    text: "A1 fue actualizado"
+    timeout: 3000
