@@ -49,9 +49,11 @@ module.exports = {
       },
       moduleNameMapper: {
         "^@/(.*)$": "<rootDir>/$1",
+        "\\.css$": "<rootDir>/__mocks__/noop.js",
         "react-native-maps": "<rootDir>/__mocks__/react-native-maps.tsx",
         "expo-router": "<rootDir>/__mocks__/expo-router.ts",
         "react-native-safe-area-context": "<rootDir>/__mocks__/react-native-safe-area-context.ts",
+        "react-native-gesture-handler": "<rootDir>/__mocks__/react-native-gesture-handler.ts",
         "react-native-svg": "<rootDir>/__mocks__/react-native-svg.ts",
         "lucide-react-native": "<rootDir>/__mocks__/lucide-react-native.ts",
         "^nativewind/jsx-runtime$": "<rootDir>/__mocks__/nativewind-jsx-runtime.ts",

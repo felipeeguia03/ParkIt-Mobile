@@ -29,7 +29,15 @@
       "Bash(supabase start:*)",
       "Bash(supabase db:*)",
       "Bash(npm run:*)",
-      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\)[''''expo'''']; print\\(d.get\\(''''ios'''',{}\\).get\\(''''bundleIdentifier'''',''''''''\\), d.get\\(''''android'''',{}\\).get\\(''''package'''',''''''''\\), d.get\\(''''slug'''',''''''''\\)\\)\")"
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\)[''''expo'''']; print\\(d.get\\(''''ios'''',{}\\).get\\(''''bundleIdentifier'''',''''''''\\), d.get\\(''''android'''',{}\\).get\\(''''package'''',''''''''\\), d.get\\(''''slug'''',''''''''\\)\\)\")",
+      "Bash(head -60 \"/Users/felipeeguia03/Desktop/parkit-mobile/app/\\(tabs\\)/more.tsx\")",
+      "Bash(git:*)",
+      "Bash(ls \"/Users/felipeeguia03/Desktop/parkit-mobile/app/\\(tabs\\)/\")",
+      "Bash(xargs -I{} basename {})",
+      "Bash(ls /Users/felipeeguia03/Desktop/parkit-mobile/app/\\\\\\(tabs\\\\\\)/)",
+      "Bash(cat /Users/felipeeguia03/Desktop/parkit-mobile/app/\\\\\\(tabs\\\\\\)/index.tsx)",
+      "Bash(cat /Users/felipeeguia03/Desktop/parkit-mobile/app/\\\\\\(tabs\\\\\\)/report.tsx)",
+      "Bash(wc:*)"
     ]
   }
 }

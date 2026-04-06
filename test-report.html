@@ -172,7 +172,7 @@
 <body>
 
 <h1>ParkIt · Test Report</h1>
-<p class="subtitle">Generado el 4/4/2026, 12:52:49</p>
+<p class="subtitle">Generado el 5/4/2026, 06:40:53</p>
 
 <div class="summary">
   <div class="stat-card total">
@@ -188,7 +188,7 @@
     <div class="label">Fallaron</div>
   </div>
   <div class="stat-card time">
-    <div class="value">19.01 s</div>
+    <div class="value">10.85 s</div>
     <div class="label">Duración</div>
   </div>
 </div>
@@ -201,7 +201,12 @@
   <div class="progress-bar"><div class="progress-fill"></div></div>
 </div>
 
-
+<div class="info-banner">
+        <span>ℹ️</span>
+        <span>Tests de integración no corrieron en este reporte.
+          Ejecutá <code>node scripts/generate-test-report.js --integration</code>
+          (requiere <code>supabase start</code>).</span>
+      </div>
 
 <div class="projects">
   <div class="proj-badge lib"><span class="dot"></span> lib — lógica pura</div>
@@ -239,12 +244,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">Realtime con mismo status → limpia el pendingOptimistic</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">Realtime con status distinto → update aplicado (servidor corrigió)</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -254,12 +259,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">dos spots en vuelo simultáneo → cada uno deduplica independientemente</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">Realtime de spot distinto no limpia el pending de otro spot</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -289,12 +294,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">mismas props → true (no re-renderizar)</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">3ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">nuevo array de zones con mismos statuses → true</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -309,7 +314,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">focusedZoneId cambia de null a 'A' → false</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -427,17 +432,17 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">cambia el status del spot correcto</span>
-          <span class="test-duration">3ms</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no modifica otros spots de la misma zona</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no modifica zonas que no contienen el spot</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -447,7 +452,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">devuelve un array nuevo (inmutabilidad)</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -462,7 +467,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">puede cambiar a status 'reported'</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">1ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -476,7 +481,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">Map vacío devuelve los mismos statuses</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -516,7 +521,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">lanza error si se usa fuera de AuthProvider</span>
-          <span class="test-duration">43ms</span>
+          <span class="test-duration">70ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -525,7 +530,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">empieza con loading=true mientras resuelve getSession</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -535,7 +540,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">carga el user cuando hay sesión persistida</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">2ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -554,12 +559,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">rol por defecto es 'user'</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">usa metadata.role si está disponible</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">1ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -568,7 +573,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">rechaza email sin dominio @ucc.edu.ar (no llama a Supabase)</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -578,17 +583,17 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">traduce 'Invalid login credentials' al español</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">14ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">devuelve error genérico para otros fallos de red</span>
-          <span class="test-duration">11ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">devuelve success:true cuando Supabase acepta las credenciales</span>
-          <span class="test-duration">45ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -602,7 +607,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a supabase.auth.signOut</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">0ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -611,12 +616,80 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">actualiza el user cuando el listener dispara con nueva sesión</span>
-          <span class="test-duration">0ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">limpia el user cuando el listener dispara con session=null (logout externo)</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj hooks">hooks</span>
+        <span class="suite-name">useLocationPermission.test<br/><span class="suite-path">__tests__/hooks/useLocationPermission.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">8 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">useLocationPermission — estado inicial</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">empieza en 'undetermined' antes de que resuelva el check</span>
+          <span class="test-duration">8ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">pasa a 'granted' si ya había permiso otorgado previamente</span>
           <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">pasa a 'denied' si el permiso estaba denegado</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">se queda en 'undetermined' si el SO devuelve ese estado</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useLocationPermission — requestPermission</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve true y pone status 'granted' cuando el usuario acepta</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve false y pone status 'denied' cuando el usuario rechaza</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">llama a requestForegroundPermissionsAsync exactamente una vez</span>
+          <span class="test-duration">5ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useLocationPermission — setStatus</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">setStatus permite forzar el estado (ej: 'Ahora no' en la UI)</span>
+          <span class="test-duration">1ms</span>
         </div>
       </div></div>
     </div>
@@ -641,12 +714,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">devuelve todos los spots disponibles de todas las zonas</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">51ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no incluye spots occupied ni reported</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">17ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -656,7 +729,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">sin filtro, devuelve spots de todas las zonas</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">5ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -665,22 +738,22 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">currentAvailableSpot empieza en índice 0</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">7ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleNextSpot avanza el carrusel</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">15ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleNextSpot hace wrap-around al principio</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">6ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handlePrevSpot retrocede el carrusel con wrap-around</span>
-          <span class="test-duration">3ms</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -690,7 +763,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">currentAvailableSpot es null si no hay spots disponibles</span>
-          <span class="test-duration">3ms</span>
+          <span class="test-duration">0ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -699,7 +772,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">abre modal de confirmación con el spot actual del carrusel</span>
-          <span class="test-duration">5ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -709,7 +782,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">bloquea si el usuario ya tiene parking activo (doble ocupación)</span>
-          <span class="test-duration">82ms</span>
+          <span class="test-duration">23ms</span>
         </div>
       </div></div>
     </div>
@@ -734,22 +807,22 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">Realtime actualiza el status de un spot en zones</span>
-          <span class="test-duration">24ms</span>
+          <span class="test-duration">21ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">Realtime no modifica zonas que no contienen el spot</span>
-          <span class="test-duration">2ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">deduplication: eco del propio optimistic → no vuelve a aplicar</span>
           <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
-          <span class="test-title">deduplication: Realtime con status diferente → sí aplica corrección del servidor</span>
+          <span class="test-title">deduplication: eco del propio optimistic → no vuelve a aplicar</span>
           <span class="test-duration">3ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">deduplication: Realtime con status diferente → sí aplica corrección del servidor</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -779,7 +852,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleSpotSelect mantiene referencia tras setZones</span>
-          <span class="test-duration">4ms</span>
+          <span class="test-duration">3ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -789,22 +862,22 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleConfirmParking mantiene referencia tras setZones</span>
-          <span class="test-duration">1ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">handleLeaveParking mantiene referencia tras setZones</span>
           <span class="test-duration">3ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
+          <span class="test-title">handleLeaveParking mantiene referencia tras setZones</span>
+          <span class="test-duration">1ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
           <span class="test-title">handleReportConfirm mantiene referencia tras setZones</span>
-          <span class="test-duration">5ms</span>
+          <span class="test-duration">0ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handlers estables a través de 10 setZones consecutivos</span>
-          <span class="test-duration">4ms</span>
+          <span class="test-duration">2ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -813,17 +886,17 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleSpotSelect con spot 'available' → abre confirmModal</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleSpotSelect con spot 'occupied' → no abre modal</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleReportSpot con spot 'occupied' → abre reportModal</span>
-          <span class="test-duration">1ms</span>
+          <span class="test-duration">2ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -837,7 +910,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleConfirmParking → userParking se setea con zona y spot correctos</span>
-          <span class="test-duration">6ms</span>
+          <span class="test-duration">3ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -847,7 +920,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleConfirmParking → cierra el modal</span>
-          <span class="test-duration">2ms</span>
+          <span class="test-duration">1ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -857,7 +930,98 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">handleLeaveParking → spot vuelve a 'available'</span>
+          <span class="test-duration">1ms</span>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="suite">
+      <div class="suite-header">
+        <span class="suite-icon" style="color:var(--green)">✓</span>
+        <span class="suite-proj hooks">hooks</span>
+        <span class="suite-name">useUCCGeofence.test<br/><span class="suite-path">__tests__/hooks/useUCCGeofence.test.tsx</span></span>
+        <span class="suite-counts">
+          <span class="count-pass">11 ✓</span>
+          
+        </span>
+        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="suite-body">
+      <div class="describe-group">
+        <div class="describe-title">useUCCGeofence — estado inicial</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">empieza en 'unknown'</span>
+          <span class="test-duration">15ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useUCCGeofence — sin permiso</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">se queda en 'unknown' y no llama a getCurrentPosition</span>
+          <span class="test-duration">6ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">se queda en 'unknown' con status 'undetermined'</span>
+          <span class="test-duration">8ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useUCCGeofence — con permiso</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve 'inside' cuando isInsideCampus retorna true</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">devuelve 'outside' cuando isInsideCampus retorna false</span>
+          <span class="test-duration">5ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">pasa las coordenadas correctas a isInsideCampus</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">vuelve a 'unknown' si getCurrentPosition lanza</span>
+          <span class="test-duration">6ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useUCCGeofence — recheck</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">recheck re-evalúa el estado con datos frescos</span>
           <span class="test-duration">3ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">recheck con permiso denegado → status vuelve a 'unknown'</span>
+          <span class="test-duration">2ms</span>
+        </div>
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">recheck llama a getCurrentPosition cada vez</span>
+          <span class="test-duration">2ms</span>
+        </div>
+      </div>
+      <div class="describe-group">
+        <div class="describe-title">useUCCGeofence — delegación correcta a isInsideCampus</div>
+        
+        <div class="test-row">
+          <span class="test-dot passed"></span>
+          <span class="test-title">no modifica las coordenadas antes de pasarlas</span>
+          <span class="test-duration">1ms</span>
         </div>
       </div></div>
     </div>
@@ -882,7 +1046,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">renderiza sin crashear con zonas</span>
-          <span class="test-duration">32ms</span>
+          <span class="test-duration">183ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -892,7 +1056,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra la leyenda global (Alta/Media/Lleno) cuando no hay zona enfocada</span>
-          <span class="test-duration">5ms</span>
+          <span class="test-duration">9ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -901,17 +1065,17 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el HUD con el nombre de la zona al recibir focusZoneId + focusTimestamp</span>
-          <span class="test-duration">104ms</span>
+          <span class="test-duration">39ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el conteo de disponibles/totales en el HUD</span>
-          <span class="test-duration">11ms</span>
+          <span class="test-duration">6ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">la leyenda global se oculta cuando hay zona enfocada</span>
-          <span class="test-duration">61ms</span>
+          <span class="test-duration">23ms</span>
         </div>
       </div></div>
     </div>
@@ -936,12 +1100,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no renderiza nada si zone es null</span>
-          <span class="test-duration">7ms</span>
+          <span class="test-duration">13ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no renderiza nada si spot es null</span>
-          <span class="test-duration">46ms</span>
+          <span class="test-duration">1ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -950,12 +1114,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el ID del spot en el hero</span>
-          <span class="test-duration">310ms</span>
+          <span class="test-duration">403ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el nombre de la zona</span>
-          <span class="test-duration">4ms</span>
+          <span class="test-duration">6ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -969,17 +1133,17 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a onConfirm al presionar 'Estacionar aquí'</span>
-          <span class="test-duration">3ms</span>
+          <span class="test-duration">4ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a onOpenChange(false) al presionar 'Cancelar'</span>
-          <span class="test-duration">6ms</span>
+          <span class="test-duration">5ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">onConfirm y onOpenChange son independientes</span>
-          <span class="test-duration">4ms</span>
+          <span class="test-duration">6ms</span>
         </div>
       </div></div>
     </div>
@@ -1004,12 +1168,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el branding de la app</span>
-          <span class="test-duration">223ms</span>
+          <span class="test-duration">307ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el formulario de login</span>
-          <span class="test-duration">20ms</span>
+          <span class="test-duration">10ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -1018,22 +1182,22 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a login con el email y la contraseña ingresados</span>
-          <span class="test-duration">15ms</span>
+          <span class="test-duration">31ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">navega a /(tabs) cuando el login es exitoso</span>
-          <span class="test-duration">62ms</span>
+          <span class="test-duration">70ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el mensaje de error cuando login falla</span>
-          <span class="test-duration">121ms</span>
+          <span class="test-duration">69ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">el error se borra al modificar el email</span>
-          <span class="test-duration">164ms</span>
+          <span class="test-duration">76ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -1042,7 +1206,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">el botón está deshabilitado cuando loading=true</span>
-          <span class="test-duration">12ms</span>
+          <span class="test-duration">3ms</span>
         </div>
       </div></div>
     </div>
@@ -1067,12 +1231,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el ID del spot</span>
-          <span class="test-duration">105ms</span>
+          <span class="test-duration">115ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el nombre de la zona</span>
-          <span class="test-duration">3ms</span>
+          <span class="test-duration">7ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -1086,12 +1250,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a onLeave al presionar 'Liberar lugar'</span>
-          <span class="test-duration">3ms</span>
+          <span class="test-duration">4ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">navega al mapa con focusZoneId correcto al presionar 'Ver en mapa'</span>
-          <span class="test-duration">5ms</span>
+          <span class="test-duration">3ms</span>
         </div>
       </div></div>
     </div>
@@ -1116,12 +1280,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no renderiza nada si zone es null</span>
-          <span class="test-duration">12ms</span>
+          <span class="test-duration">7ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">no renderiza nada si spot es null</span>
-          <span class="test-duration">4ms</span>
+          <span class="test-duration">2ms</span>
         </div>
       </div>
       <div class="describe-group">
@@ -1130,7 +1294,7 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">muestra el ID del spot</span>
-          <span class="test-duration">381ms</span>
+          <span class="test-duration">436ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
@@ -1144,167 +1308,12 @@
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a onConfirm al presionar 'Reportar como ocupado'</span>
-          <span class="test-duration">4ms</span>
+          <span class="test-duration">9ms</span>
         </div>
         <div class="test-row">
           <span class="test-dot passed"></span>
           <span class="test-title">llama a onOpenChange(false) al presionar 'Cancelar'</span>
-          <span class="test-duration">5ms</span>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="suite">
-      <div class="suite-header">
-        <span class="suite-icon" style="color:var(--green)">✓</span>
-        <span class="suite-proj integration">integration</span>
-        <span class="suite-name">auth.test<br/><span class="suite-path">__tests__/integration/auth.test.ts</span></span>
-        <span class="suite-counts">
-          <span class="count-pass">5 ✓</span>
-          
-        </span>
-        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </div>
-      <div class="suite-body">
-      <div class="describe-group">
-        <div class="describe-title">Auth — integración</div>
-        
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">login exitoso con credenciales válidas</span>
-          <span class="test-duration">98ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">sesión activa después del login</span>
-          <span class="test-duration">88ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">rechaza email no-institucional sin llamar a Supabase</span>
-          <span class="test-duration">0ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">rechaza contraseña incorrecta</span>
-          <span class="test-duration">83ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">usuario no autenticado no puede leer parking_spots (RLS)</span>
-          <span class="test-duration">3ms</span>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="suite">
-      <div class="suite-header">
-        <span class="suite-icon" style="color:var(--green)">✓</span>
-        <span class="suite-proj integration">integration</span>
-        <span class="suite-name">parking.test<br/><span class="suite-path">__tests__/integration/parking.test.ts</span></span>
-        <span class="suite-counts">
-          <span class="count-pass">8 ✓</span>
-          
-        </span>
-        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </div>
-      <div class="suite-body">
-      <div class="describe-group">
-        <div class="describe-title">Parking — ciclo claim/release</div>
-        
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">puede leer parking_spots autenticado</span>
-          <span class="test-duration">9ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">spot inicial está disponible</span>
-          <span class="test-duration">4ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">claim: actualiza spot a occupied</span>
-          <span class="test-duration">9ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">claim: inserta parking_event con action=claim</span>
-          <span class="test-duration">5ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">claim: el evento es visible para el mismo usuario</span>
-          <span class="test-duration">2ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">release: actualiza spot a available + inserta event con duration_minutes</span>
-          <span class="test-duration">7ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">acción inválida es rechazada por el check constraint</span>
-          <span class="test-duration">2ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">usuario no puede leer eventos de otro usuario (RLS)</span>
-          <span class="test-duration">198ms</span>
-        </div>
-      </div></div>
-    </div>
-
-    <div class="suite">
-      <div class="suite-header">
-        <span class="suite-icon" style="color:var(--green)">✓</span>
-        <span class="suite-proj integration">integration</span>
-        <span class="suite-name">reports.test<br/><span class="suite-path">__tests__/integration/reports.test.ts</span></span>
-        <span class="suite-counts">
-          <span class="count-pass">6 ✓</span>
-          
-        </span>
-        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </div>
-      <div class="suite-body">
-      <div class="describe-group">
-        <div class="describe-title">Reportes — integración</div>
-        
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">puede insertar reporte tipo free_but_occupied</span>
-          <span class="test-duration">9ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">puede insertar reporte tipo occupied_but_free</span>
-          <span class="test-duration">4ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">tipo inválido es rechazado por constraint</span>
-          <span class="test-duration">5ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">usuario puede leer sus propios reportes</span>
-          <span class="test-duration">3ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">el spot queda en 'reported' después de actualizar su status</span>
-          <span class="test-duration">6ms</span>
-        </div>
-        <div class="test-row">
-          <span class="test-dot passed"></span>
-          <span class="test-title">otro usuario no puede leer reportes del reporter (RLS)</span>
-          <span class="test-duration">195ms</span>
+          <span class="test-duration">12ms</span>
         </div>
       </div></div>
     </div>
@@ -1391,7 +1400,7 @@
       </div>
     </div>
 
-<footer>ParkIt UCC · Jest 15 suites · 143 tests · 3 flujos E2E · 2 scripts de carga</footer>
+<footer>ParkIt UCC · Jest 14 suites · 143 tests · 3 flujos E2E · 2 scripts de carga</footer>
 
 <script>
   document.querySelectorAll('.suite-header').forEach(header => {
